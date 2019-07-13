@@ -10,10 +10,9 @@ class BaseModel(peewee.Model):
 
 class Experiment(BaseModel):
     id_experiment =  peewee.AutoField()
-    experiment_name = peewee.CharField(null=True)
+    experiment_name = peewee.CharField()
     comment = peewee.CharField(null=True)
     date_experiement = peewee.DateField(default=datetime.datetime.now, null=True)
-    execution_time = peewee.FloatField(null=True)
 
 
 class Parameter(BaseModel):
@@ -26,16 +25,16 @@ class Parameter(BaseModel):
 
 class Output(BaseModel):
     id_output =  peewee.AutoField()
-    type_output = peewee.CharField(null=True)
-    path_output = peewee.CharField(null=True)
+    type_output = peewee.CharField()
+    path_output = peewee.CharField()
 
     experiment = peewee.ForeignKeyField(Experiment, to_field="id_experiment")
 
 
 class Score(BaseModel):
     id_score =  peewee.AutoField()
-    type_score = peewee.CharField(null=True)
-    score = peewee.FloatField(null=True)
+    type_score = peewee.CharField()
+    score = peewee.FloatField()
 
     experiment = peewee.ForeignKeyField(Experiment, to_field="id_experiment")
 
