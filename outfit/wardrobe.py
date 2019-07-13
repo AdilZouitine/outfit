@@ -1,5 +1,5 @@
 import os.path
-import typing
+from typing import Dict, NoReturn, Any
 
 import peewee
 
@@ -23,21 +23,21 @@ class Wardrobe:
         pass
 
     def add_experiment(self, experiment_name: str, comment: str=None,
-                       date_experiment=None) -> typing.NoReturn:
+                       date_experiment=None) -> NoReturn:
 
         self.experiment = Experiment.create(
             experiment_name=experiment_name,
             comment=comment,
             date_experiment=date_experiment)
 
-    def add_output(self, type_output: str, path_output: str) -> typing.NoReturn:
+    def add_output(self, type_output: str, path_output: str) -> NoReturn:
         self.output.append(
             Output.create(
                 type_output=type_output,
                 path_output=path_output,
                 experiment=self.experiment))
 
-    def add_parameter(self, parameter_name: str, parameter) -> typing.NoReturn:
+    def add_parameter(self, parameter_name: str, parameter) -> NoReturn:
 
         self.parameter.append(
             Parameter.create(
@@ -45,21 +45,21 @@ class Wardrobe:
                 parameter=parameter,
                 experiment=self.experiment))
 
-    def add_score(self, type_score: str, score: float) -> typing.NoReturn:
+    def add_score(self, type_score: str, score: float) -> NoReturn:
         self.score.append(
             Score.create(
                 type_score=type_score, score=score,
                 experiment=self.experiment))
 
-    def add_dict_score(self, dict_score:typing.Dict[str, float]) -> typing.NoReturn:
+    def add_dict_score(self, dict_score:Dict[str, float]) -> NoReturn:
         for key, value in dict_score.items():
             self.add_dict_score(type_score=key,score=value)
 
-    def add_dict_parameter(self, dict_parameter:typing.Dict[str, typing.Any]) -> typing.NoReturn:
+    def add_dict_parameter(self, dict_parameter:Dict[str, Any]) -> NoReturn:
         for key, value in dict_parameter.items():
             self.add_parameter(parameter_name=key, parameter=value)
 
-    def add_dict_output(self, dict_output:typing.Dict[str, str]) -> typing.NoReturn:
+    def add_dict_output(self, dict_output:Dict[str, str]) -> NoReturn:
         for key, value in dict_output.items():
             self.add_dict_output(type_output=key, path_output=value)
 
@@ -73,7 +73,7 @@ class Wardrobe:
                         n_best=10):
         pass
 
-    def commit(self) -> typing.NoReturn:
+    def commit(self) -> NoReturn:
         self.experiment.insert()
 
         for list_row in [self.parameter, self.score, self.output]:
