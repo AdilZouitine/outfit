@@ -2,5 +2,5 @@
 *.egg
 .vscode/settings.json
 */PKG-INFO
-gym_found.egg-info/
+outfit.egg-info/
 .idea
