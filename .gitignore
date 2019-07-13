@@ -1,0 +1,6 @@
+*.pyc
+*.egg
+.vscode/settings.json
+*/PKG-INFO
+gym_found.egg-info/
+.idea

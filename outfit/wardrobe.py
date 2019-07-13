@@ -1,9 +1,9 @@
 import peewee
 
-class Dressing:
+class Wardrobe:
     
     def __init__(self, db_path: str):
-        self.db = sqlite3.connect(db_path)
+        pass
 
     def __call__(self):
         pass
