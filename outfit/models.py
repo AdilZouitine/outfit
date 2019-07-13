@@ -1,4 +1,3 @@
-import datetime
 import peewee
 
 database = peewee.SqliteDatabase(None)
@@ -12,7 +11,7 @@ class Experiment(BaseModel):
     id_experiment =  peewee.AutoField()
     experiment_name = peewee.CharField()
     comment = peewee.CharField(null=True)
-    date_experiement = peewee.DateField(default=datetime.datetime.now, null=True)
+    date_experiement = peewee.DateField(null=True)
 
 
 class Parameter(BaseModel):
