@@ -1,9 +1,3 @@
-#!/usr/bin/env python3
-# -*- coding: utf-8 -*-
-"""
-@author: Adil Zouitine <adilzouitinegm@gmail.com
-"""
-
 from setuptools import setup, find_packages
 import outfit
 

@@ -1,5 +1,6 @@
 import os.path
 from typing import Dict, NoReturn, Any
+import datetime
 
 import peewee
 
@@ -19,11 +20,8 @@ class Wardrobe:
         self.output = []
         self.score = []
 
-    def __call__(self):
-        pass
-
     def add_experiment(self, experiment_name: str, comment: str=None,
-                       date_experiment=None) -> NoReturn:
+                       date_experiment:datetime.datetime=None) -> NoReturn:
 
         self.experiment = Experiment.create(
             experiment_name=experiment_name,
@@ -37,7 +35,7 @@ class Wardrobe:
                 path_output=path_output,
                 experiment=self.experiment))
 
-    def add_parameter(self, parameter_name: str, parameter) -> NoReturn:
+    def add_parameter(self, parameter_name: str, parameter: Any) -> NoReturn:
 
         self.parameter.append(
             Parameter.create(
@@ -73,7 +71,7 @@ class Wardrobe:
                         n_best=10):
         pass
 
-    def commit(self) -> NoReturn:
+    def tidy(self) -> NoReturn:
         self.experiment.insert()
 
         for list_row in [self.parameter, self.score, self.output]:
