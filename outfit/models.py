@@ -12,7 +12,7 @@ class Experiment(BaseModel):
     experiment_name = peewee.CharField()
     comment = peewee.CharField(null=True)
     date_experiement = peewee.DateField(null=True)
-
+    
 
 class Parameter(BaseModel):
     id_parameter =  peewee.AutoField()
