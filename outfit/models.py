@@ -37,6 +37,12 @@ class Score(BaseModel):
 
     experiment = peewee.ForeignKeyField(Experiment, to_field="id_experiment")
 
+class Feature(BaseModel):
+    id_feature =  peewee.AutoField()
+    feature_name = peewee.CharField()
+
+    experiment = peewee.ForeignKeyField(Experiment, to_field="id_experiment")
+
 
 class DatabaseUser:
     """
@@ -48,5 +54,5 @@ class DatabaseUser:
 
 def create_database(db_path):
     DatabaseUser(db_path)
-    database.create_tables([Experiment, Parameter, Output, Score])
+    database.create_tables([Experiment, Parameter, Output, Score, Feature])
 
