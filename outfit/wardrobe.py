@@ -11,6 +11,23 @@ from .models import (DatabaseUser, Experiment, Feature, Output, Parameter,
 
 
 class Wardrobe:
+    """The wardrobe allows you to insert your experimentations and to request them.
+
+    Parameters:
+        db_path (str): Path where the database is stored
+        however if the file does not exist, it will be created.
+    Example:
+        ::
+            >>> from outfit import Wardrobe, Experiment, Score, Output, Parameter, Feature
+            >>> tidy = Wardrobe(':memory:')
+            >>> tidy.add_experiment(experiment_name="Mnist", comment='Pytorch Resnet 18', date_experiment=None)
+            >>> score = {'acc': 0.90, 'loss': 0.1}
+            >>> tidy.add_dict_score(score)
+            >>> param = {'dropout': 0.20, 'kernel_size': '3x3', 'task': 'classification'}
+            >>> tidy.add_dict_parameter(param)
+            >>> tidy.add_output(type_output='tensorboard', path_output='event.tb')
+            >>> tidy.tidy()
+    """
     def __init__(self, db_path: str):
 
         if not os.path.isfile(db_path):
