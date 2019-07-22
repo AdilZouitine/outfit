@@ -93,8 +93,9 @@ class Wardrobe:
         for feature in list_feature:
             self.add_feature(feature_name=feature)
 
-    def query(self, query):
-        return Experiment.select()
+    def query(self, query: peewee.ModelSelect) -> dict:
+        for res in query.dicts():
+            yield res
 
     def get_best_scores(self,
                         mode: str,
