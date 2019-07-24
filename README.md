@@ -41,6 +41,8 @@ param = {
 
 # Create the instance of your model here with your parameters
 wardrobe.add_dict_parameter(param)
+
+
 # Do your training phase here.
 output = {'training log': '/result/training_log_resnet18.txt'}
 
@@ -66,7 +68,7 @@ wardrobe.add_dict_score(score)
 
 wardrobe.tidy() # commit your experiment in database
 
-# If you want to have the best experiments 
+# If you want to get the best experiments 
 
 for exp in wardrobe.get_best_scores(mode='max',on_score='val acc'):
     '''
