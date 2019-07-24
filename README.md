@@ -20,9 +20,9 @@ import datetime
 
 # Here import all the libraries you need for your experiment
 
-from outfit import WardRobe, getlog
+from outfit import Wardrobe, getlog
 
-wardrobe = WardRobe(db_path='foo/bar/mnist.db')
+wardrobe = Wardrobe(db_path='foo/bar/mnist.db')
 
 exp = {
     'experiment_name': 'ResNet18',
@@ -68,6 +68,9 @@ wardrobe.add_dict_score(score)
 
 wardrobe.tidy() # commit your experiment in database
 
+```
+
+```python
 # If you want to get the best experiments 
 
 for exp in wardrobe.get_best_scores(mode='max',on_score='val acc'):
@@ -80,6 +83,68 @@ for exp in wardrobe.get_best_scores(mode='max',on_score='val acc'):
     '''
     ...
 
+```
+**Output**:
+```
+════════════════════
+│ TOP 1 EXPERIMENT │
+════════════════════
+
+
+
+Table : Experiment 
+
+╒════╤═════════════════╤═══════════════════╤════════════════════════════════╤════════════════════╕
+│    │   id_experiment │ experiment_name   │ comment                        │ date_experiement   │
+╞════╪═════════════════╪═══════════════════╪════════════════════════════════╪════════════════════╡
+│  0 │               1 │ ResNet18          │ Use differential learning rate │                    │
+╘════╧═════════════════╧═══════════════════╧════════════════════════════════╧════════════════════╛
+
+
+Table : Parameter 
+
+╒════╤════════════════╤══════════════════╤═════════════╤══════════════╕
+│    │   id_parameter │ parameter_name   │ parameter   │   experiment │
+╞════╪════════════════╪══════════════════╪═════════════╪══════════════╡
+│  0 │              1 │ dropout          │ 0.2         │            1 │
+├────┼────────────────┼──────────────────┼─────────────┼──────────────┤
+│  1 │              2 │ kernel_size      │ 3x3         │            1 │
+├────┼────────────────┼──────────────────┼─────────────┼──────────────┤
+│  2 │              3 │ conv_block_1_lr  │ 0.01        │            1 │
+├────┼────────────────┼──────────────────┼─────────────┼──────────────┤
+│  3 │              4 │ conv_block_2_lr  │ 0.001       │            1 │
+╘════╧════════════════╧══════════════════╧═════════════╧══════════════╛
+
+
+Table : Output 
+
+╒════╤═════════════╤═══════════════╤═══════════════════════════╤══════════════╕
+│    │   id_output │ type_output   │ path_output               │   experiment │
+╞════╪═════════════╪═══════════════╪═══════════════════════════╪══════════════╡
+│  0 │           1 │ training log  │ training_log_resnet18.txt │            1 │
+├────┼─────────────┼───────────────┼───────────────────────────┼──────────────┤
+│  1 │           2 │ tensorboard   │ /result/event.tb          │            1 │
+├────┼─────────────┼───────────────┼───────────────────────────┼──────────────┤
+│  2 │           3 │ model         │ diff_lr_resnet18.pth      │            1 │
+╘════╧═════════════╧═══════════════╧═══════════════════════════╧══════════════╛
+
+
+Table : Score 
+
+╒════╤════════════╤══════════════╤═════════╤══════════════╕
+│    │   id_score │ type_score   │   score │   experiment │
+╞════╪════════════╪══════════════╪═════════╪══════════════╡
+│  0 │          1 │ train acc    │    0.96 │            1 │
+├────┼────────────┼──────────────┼─────────┼──────────────┤
+│  1 │          2 │ train loss   │    0.43 │            1 │
+├────┼────────────┼──────────────┼─────────┼──────────────┤
+│  2 │          3 │ val acc      │    0.94 │            1 │
+├────┼────────────┼──────────────┼─────────┼──────────────┤
+│  3 │          4 │ val loss     │    0.46 │            1 │
+╘════╧════════════╧══════════════╧═════════╧══════════════╛
+
+
+Table : Feature 
 
 ```
 
