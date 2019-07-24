@@ -48,7 +48,8 @@ class Wardrobe:
     def add_experiment(self,
                        experiment_name: str,
                        comment: str = None,
-                       date_experiment: datetime.datetime = None) -> NoReturn:
+                       date_experiment: datetime.datetime = None,
+                       **kwargs) -> NoReturn:
         """Create a new database experiment.
         
         Parameters:
