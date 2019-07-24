@@ -1,8 +1,14 @@
-# :dress: Outfit
+# :dress: Outfit [WIP]
 
 Outfit is a lightweight library to **tidy up** your machine learning experiments in a simple way.
 
 The idea of Outfit is to store in your wardrobe your parameters, output file, scores and features in order to be able to make a request and find out which are your best experimentation according to a given criterion.
+
+## How install outfit ?
+
+Dev version: `pip install git+https://github.com/AdilZouitine/outfit --upgrade`
+
+Pypi is comming.
 
 ## How outfit works ?
 
@@ -37,7 +43,7 @@ wardrobe.add_dict_parameter(param)
 output = {'training log': '/result/training_log_resnet18.txt'}
 
 @getlog(filepath=output['training log'])
-def train_model(model, loaders, loss, lr_scheduler, n_epoch)
+def train_model(model, loaders, loss, lr_scheduler, n_epoch):
     ...
 
 output.update({
