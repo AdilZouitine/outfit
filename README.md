@@ -2,7 +2,7 @@
 
 Outfit is a lightweight library to **tidy up** your machine learning experiments in a simple way.
 
-The idea of Outfit is to store in your wardrobe your parameters, output file, scores and features in order to be able to make a request and find out which are your best experimentation according to a given criterion.
+The idea of Outfit is to store in your `Wardrobe` your parameters, output file, scores and features in order to be able to make a request and find out which are your best experimentation according to a given criterion.
 
 ## How install outfit ?
 
@@ -11,6 +11,8 @@ Dev version: `pip install git+https://github.com/AdilZouitine/outfit --upgrade`
 Pypi is comming.
 
 ## How outfit works ?
+
+**notebook tutorials will be coming soon**
 
 ```python
 
@@ -68,13 +70,25 @@ wardrobe.tidy() # commit your experiment in database
 
 for exp in wardrobe.get_best_scores(mode='max',on_score='val acc'):
     '''
-    At the default verbose and will print on the console 
+    Verbose is true by default and will print on the console 
     at each iteration the parameters, output file, 
     features and scores in a table format.
 
-    Also returns in dictionary form the parameters, output file, features and scores.
+    Also returns in dictionary the parameters, output file, features and scores.
     '''
     ...
 
 
 ```
+
+## Other solution:
+
+[mlflow](https://github.com/mlflow/mlflow) & [dvc](https://github.com/iterative/dvc).
+
+These solutions are great, they also offer a user interface and have many more options than my library however for a simple use where you only want to organize your experimentation and make a simple query.
+Both solutions seem to be overkill.
+
+## TODO
+
+- Finish the notebook tutorials
+- Put outfit on Pypi
