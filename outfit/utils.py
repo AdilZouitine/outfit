@@ -5,11 +5,11 @@ from typing import Callable, Any, NoReturn
 
 class Logger:
     '''Logger allowing to display on the console and write a message in a file
-    at the same time
+    at the same time.
     
     References :
     
-    [1] -<https://stackoverflow.com/questions/14906764/how-to-redirect-stdout-to-both-file-and-console-with-scripting/14906787>
+     1. `<https://stackoverflow.com/questions/14906764/how-to-redirect-stdout-to-both-file-and-console-with-scripting/14906787>`_
     '''
 
     def __init__(self, filepath: str) -> NoReturn:
@@ -28,6 +28,11 @@ class Logger:
 
 
 def getlog(filepath: str) -> Callable:
+    """Writes all console prints of the decorated function to a file.
+    
+    Parameters:
+        filepath (str): Path of the file where the logs will be written.
+    """
     def decorator(function: Callable) -> Callable:
         @wraps(function)
         def wrapper(*args, **kwargs) -> Any:
