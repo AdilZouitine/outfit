@@ -6,7 +6,16 @@ The idea of Outfit is to store in your `Wardrobe` your parameters, output file, 
 
 ## How install outfit ?
 
-Dev version: `pip install git+https://github.com/AdilZouitine/outfit --upgrade`
+Dev version: 
+```bash
+git clone https://github.com/AdilZouitine/outfit
+cd outfit
+pip install -r requirements.txt
+pip install -e.
+```
+
+**If you have all requirements** :
+`pip install git+https://github.com/AdilZouitine/outfit --upgrade`
 
 Pypi is comming.
 
