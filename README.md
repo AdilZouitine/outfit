@@ -11,7 +11,7 @@ Dev version:
 git clone https://github.com/AdilZouitine/outfit
 cd outfit
 pip install -r requirements.txt
-pip install -e.
+pip install -e .
 ```
 
 **If you have all requirements** :
