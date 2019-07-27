@@ -4,3 +4,5 @@
 */PKG-INFO
 outfit.egg-info/
 .idea
+dist/*
+build/*

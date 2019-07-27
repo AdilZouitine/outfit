@@ -6,7 +6,13 @@ The idea of Outfit is to store in your `Wardrobe` your parameters, output file, 
 
 ## How install outfit ?
 
-Dev version: 
+**PyPI**:
+
+```bash
+pip install outfit
+```
+
+**Dev version**: 
 ```bash
 git clone https://github.com/AdilZouitine/outfit
 cd outfit
@@ -14,14 +20,9 @@ pip install -r requirements.txt
 pip install -e .
 ```
 
-**If you have all requirements** :
-`pip install git+https://github.com/AdilZouitine/outfit --upgrade`
-
-Pypi is comming.
 
 ## How outfit works ?
 
-**notebook tutorials will be coming soon**
 
 - **Tutorial 1: Build a simple model management pipeline with outfit for a CNN with Pytorch on MNIST dataset** [![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/drive/17vJSQ9WRv1OeagyayXBq_eHs9H_Qg5JP) 
 
@@ -166,7 +167,3 @@ Table : Feature
 These solutions are great, they also offer a user interface and have many more options than my library however for a simple use where you only want to organize your experimentation and make a simple query.
 Both solutions seem to be overkill.
 
-## TODO
-
-- Finish the notebook tutorials
-- Put outfit on Pypi
