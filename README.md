@@ -1,4 +1,4 @@
-# :dress: Outfit [WIP]
+# :dress: Outfit
 
 Outfit is a lightweight library to **tidy up** your machine learning experiments in a simple way.
 
