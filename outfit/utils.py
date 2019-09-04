@@ -49,19 +49,50 @@ def getlog(filepath: str) -> Callable:
 
 
 class RunGroup:
+    """
+    The RunGroup class stores informations about a bunch of experiments that shares 
+    the sames parameters excepted the on_param parameter.
+    """
     def __init__(self, df, on_param):
+        """
+        :param df: pandas Dataframe containg experiments scores and parameters
+        :param on_param: The parameter that change across experiments
+        """
         self.df = df
         self.on_param = on_param
-        self.not_col = [self.on_param, "score", "experiment_name", "id_experiment"]
+        not_col = [self.on_param, "score", "experiment_name", "id_experiment"]
+        # Add parameters as class attributes
         for column in self.df.columns:
-            if column not in self.not_col:
+            if column not in not_col:
                 setattr(self, column, list(self.df[column])[0])
 
     def plot(self, show=True):
+        """
+        Plot the values of the desired score by on_param values
+        :param show: Do show the plot or not
+        """
+        if len(self.df) < 2: return
         scores = self.df.score
-        exp_name = self.df.experiment_name
         param = self.df[self.on_param]
         names = [self.on_param + "_" + p for p in param]
-        p = plt.bar(names, scores)
+
+        # param, names = zip(*sorted(zip(param, names)))
+        sortedRes = sorted(zip(names, scores), key=lambda x: x[0])
+        names = [x[0] for x in sortedRes]
+        scores = [x[1] for x in sortedRes]
+
+        p = plt.plot(names, scores)  
+        plt.title(self._get_title())
         if show: plt.show()
-        return p
+
+    def _get_title(self):
+        """
+        Return a title containing all parameters value, used in the plot legend.
+        """
+        title = ""
+        for i, (k, v) in enumerate(vars(self).items()):
+            if k != "df" and k != "on_param":
+                title += f"{k}: {v}, "
+            if i % 3 == 0:
+                title += "\n"
+        return title
