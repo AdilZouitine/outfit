@@ -2,6 +2,8 @@ from functools import wraps
 import sys
 from typing import Callable, Any, NoReturn
 import matplotlib.pyplot as plt
+import numpy as np
+
 
 class Logger:
     '''Logger allowing to display on the console and write a message in a file
@@ -75,11 +77,15 @@ class RunGroup:
         scores = self.df.score
         param = self.df[self.on_param]
         names = [self.on_param + "_" + p for p in param]
-
-        # param, names = zip(*sorted(zip(param, names)))
         sortedRes = sorted(zip(names, scores), key=lambda x: x[0])
-        names = [x[0] for x in sortedRes]
-        scores = [x[1] for x in sortedRes]
+
+        # Do mean if multiple score for same param        
+        res_dict = {}
+        for name, score in sortedRes:
+            res_dict.setdefault(name, []).append(score)
+
+        names = list(res_dict.keys())
+        scores = [ np.mean(r) for r in list(res_dict.values())]
 
         p = plt.plot(names, scores)  
         plt.title(self._get_title())
