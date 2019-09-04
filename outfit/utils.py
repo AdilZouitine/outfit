@@ -2,7 +2,7 @@ from functools import wraps
 import sys
 from typing import Callable, Any, NoReturn
 import matplotlib.pyplot as plt
-import numpy as np
+import statistics
 
 
 class Logger:
@@ -85,7 +85,7 @@ class RunGroup:
             res_dict.setdefault(name, []).append(score)
 
         names = list(res_dict.keys())
-        scores = [ np.mean(r) for r in list(res_dict.values())]
+        scores = [ statistics.mean(r) for r in list(res_dict.values())]
 
         p = plt.plot(names, scores)  
         plt.title(self._get_title())
