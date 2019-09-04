@@ -98,6 +98,7 @@ class Wardrobe:
                 parameter=parameter,
                 experiment=self.experiment))
 
+
     def add_score(self, type_score: str, score: float) -> NoReturn:
         """Creates a new score in the database associated
         with the experimentation previously created.
@@ -224,13 +225,12 @@ class Wardrobe:
 
             yield best
 
-
     ########################################
     ###### Methods for visualisation #######
     ########################################
 
     def _get_params(self, on_param:str):
-        """
+        """ 
         Fetch parameters list from Parameter Table, excepted on_param Parameter
         :param on_param:str: Parameter to exclude from list
         """   
@@ -243,7 +243,8 @@ class Wardrobe:
 
     def _get_experiments_score(self, on_score):
         """
-        :param on_score: 
+        Fetch desired score for all experiments and parameters.
+        :param on_score: Score to select from Score table
         """   
         query = (Score.select(Score, Parameter, Experiment)
                  .join(Parameter, on=(Parameter.experiment == Score.experiment))
@@ -256,7 +257,8 @@ class Wardrobe:
 
     def _get_parameters_combinations(self, params):
         """
-        :param params: 
+        Get all combination of parameters names and values
+        :param params: Parameters to combine
         """
         # Query Parameters table to get all parameters values
         params_ = {}
@@ -272,6 +274,13 @@ class Wardrobe:
         return combinations, allNames
 
     def _merge_df_from_combinations(self, df_list, on_param):
+        """ 
+        Given a dataframe list, merge all dataframes on the id_experiment column
+        Query db to get the on_param value for each run
+        Return a dataframe with all parameters and score values for each experiment
+        :param df_list: List of dataframes to merge
+        :param on_param: Parameter to add in df
+        """
         # Merge row by exp name
         df_final = None
         for df in df_list:
@@ -291,6 +300,12 @@ class Wardrobe:
         return df_final
 
     def plot_by_param(self, on_param: str, on_score: str):
+        """
+        Plot run that have all parameters identical excepted the on_param parameter.
+        The value that is plotted is the on_score param.
+        :param on_param: Parameter to test
+        :param on_score: Score to fetch as value for plot
+        """
         # Get parameters names
         params = self._get_params(on_param=on_param)
         
