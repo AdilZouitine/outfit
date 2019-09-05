@@ -10,9 +10,9 @@ URL = 'https://github.com/AdilZouitine/Outfit'
 AUTHOR = 'Adil Zouitine'
 AUTHOR_MAIL = 'adilzouitine@gmail.com'
 LICENSE = 'BSD-3'
-REQUIRES_PYTHON = '>=3.5.0'
+REQUIRES_PYTHON = '>=3.6.5'
 
-base_packages = ['peewee>=3.9.6', 'pandas>=0.24.2', 'tabulate>=0.8.3']
+base_packages = ['peewee>=3.9.6', 'pandas>=0.24.2', 'tabulate>=0.8.3', 'matplotlib>=3.0.2']
 
 here = os.path.abspath(os.path.dirname(__file__))
 
@@ -37,7 +37,6 @@ setup(
         'License :: OSI Approved :: BSD License',
         'Programming Language :: Python',
         'Programming Language :: Python :: 3',
-        'Programming Language :: Python :: 3.5',
         'Programming Language :: Python :: 3.6',
         'Programming Language :: Python :: 3.7',
         'Programming Language :: Python :: Implementation :: PyPy'
