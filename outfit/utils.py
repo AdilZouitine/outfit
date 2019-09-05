@@ -68,7 +68,7 @@ class RunGroup:
             if column not in not_col:
                 setattr(self, column, list(self.df[column])[0])
 
-    def plot(self, show=True):
+    def plot(self, show=True) -> NoReturn:
         """
         Plot the values of the desired score by on_param values
         :param show: Do show the plot or not
@@ -91,7 +91,7 @@ class RunGroup:
         plt.title(self._get_title())
         if show: plt.show()
 
-    def _get_title(self):
+    def _get_title(self) -> str:
         """
         Return a title containing all parameters value, used in the plot legend.
         """
