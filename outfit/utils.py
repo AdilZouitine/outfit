@@ -1,8 +1,9 @@
 from functools import wraps
 import sys
 from typing import Callable, Any, NoReturn
-import matplotlib.pyplot as plt
 import statistics
+import matplotlib.pyplot as plt
+import pandas as pd
 
 
 class Logger:
@@ -55,7 +56,7 @@ class RunGroup:
     The RunGroup class stores informations about a bunch of experiments that shares 
     the sames parameters excepted the on_param parameter.
     """
-    def __init__(self, df, on_param):
+    def __init__(self, df:pd.DataFrame, on_param:str):
         """
         :param df: pandas Dataframe containg experiments scores and parameters
         :param on_param: The parameter that change across experiments
