@@ -1,6 +1,6 @@
 import datetime
 import os.path
-from typing import Any, Dict, List, NoReturn
+from typing import Any, Dict, List, Tuple, NoReturn
 import itertools as it
 from functools import reduce
 import pandas as pd
@@ -34,6 +34,7 @@ class Wardrobe:
             >>> tidy.add_output(type_output='tensorboard', path_output='event.tb')
             >>> tidy.tidy() # commit your experiment in database
     """
+
     def __init__(self, db_path: str):
 
         if not os.path.isfile(db_path):
@@ -97,7 +98,6 @@ class Wardrobe:
                 parameter_name=parameter_name,
                 parameter=parameter,
                 experiment=self.experiment))
-
 
     def add_score(self, type_score: str, score: float) -> NoReturn:
         """Creates a new score in the database associated
@@ -225,114 +225,6 @@ class Wardrobe:
 
             yield best
 
-    ########################################
-    ###### Methods for visualisation #######
-    ########################################
-
-    def _get_params(self, on_param:str):
-        """ 
-        Fetch parameters list from Parameter Table, excepted on_param Parameter
-        :param on_param:str: Parameter to exclude from list
-        """   
-        query = Parameter.select(Parameter.parameter_name)
-        df = self._query_to_dataframe(query)
-        params = set(df.parameter_name)
-        params.remove(on_param)
-        params.remove('exp_name')
-        return list(params)
-
-    def _get_experiments_score(self, on_score):
-        """
-        Fetch desired score for all experiments and parameters.
-        :param on_score: Score to select from Score table
-        """   
-        query = (Score.select(Score, Parameter, Experiment)
-                 .join(Parameter, on=(Parameter.experiment == Score.experiment))
-                 .join(Experiment, on=(Experiment.id_experiment == Parameter.experiment_id))
-                 .where(Score.type_score == on_score))
-        res = self.query(query)
-        df = pd.DataFrame(res)
-        df = df[['id_experiment','experiment_name', 'parameter_name', 'parameter', 'score']]
-        return df
-
-    def _get_parameters_combinations(self, params):
-        """
-        Get all combination of parameters names and values
-        :param params: Parameters to combine
-        """
-        # Query Parameters table to get all parameters values
-        params_ = {}
-        for p in params:
-            query = Parameter.select(Parameter.parameter_name, Parameter.parameter).where(Parameter.parameter_name == p).group_by(Parameter.parameter)
-            res = self.query(query)
-            for val in res:
-                params_.setdefault(val["parameter_name"], []).append(val['parameter'])
-
-        # Produce parameters cominations
-        allNames = sorted(params_)
-        combinations = it.product(*(params_[n] for n in allNames))
-        return combinations, allNames
-
-    def _merge_df_from_combinations(self, df_list, on_param):
-        """ 
-        Given a dataframe list, merge all dataframes on the id_experiment column
-        Query db to get the on_param value for each run
-        Return a dataframe with all parameters and score values for each experiment
-        :param df_list: List of dataframes to merge
-        :param on_param: Parameter to add in df
-        """
-        # Merge row by exp name
-        df_final = None
-        for df in df_list:
-            if df_final is None: df_final = df
-            else:
-                df_ = pd.merge(df_final, df, on='id_experiment', how='inner', suffixes=('', '_y'))
-                df_.drop([x for x in df_.columns if '_y' in x], axis="columns", inplace=True)
-                for i, row in df_.iterrows():
-                    query = (Experiment.select(Parameter.parameter_name, Parameter.parameter)
-                                .join(Parameter, on=Experiment.id_experiment == Parameter.experiment)
-                                .where(Parameter.parameter_name == on_param)
-                                .where(Experiment.id_experiment == row.id_experiment))
-                    res = self.query(query)
-                    new_param = next(iter(res))
-                    df_.at[i, new_param['parameter_name']] = new_param['parameter']
-                    df_final = df_
-        return df_final
-
-    def plot_by_param(self, on_param: str, on_score: str):
-        """
-        Plot run that have all parameters identical excepted the on_param parameter.
-        The value that is plotted is the on_score param.
-        :param on_param: Parameter to test
-        :param on_score: Score to fetch as value for plot
-        """
-        # Get parameters names
-        params = self._get_params(on_param=on_param)
-        
-        # Get all experiment with choosen score
-        all_exp_df = self._get_experiments_score(on_score=on_score)
-
-        # Get all parameters values
-        combinations, allNames = self._get_parameters_combinations(params)
-        
-        # For every combination, filter experiment by parameters values and merge by exp
-        for comb in combinations:
-            dfs = []
-            # Construct parameters dict
-            pa = {allNames[i]: c for i, c in enumerate(comb)}
-            
-            # Select exp with params
-            dfs = []
-            for k, v in pa.items():
-                df__ = all_exp_df[(all_exp_df['parameter_name'] == k) & (all_exp_df['parameter'] == v)]
-                df__ = df__[['id_experiment', 'experiment_name', 'score']]
-                df__[k] = v
-                dfs.append(df__)
-            
-            # Merge all parameters
-            merged_df = self._merge_df_from_combinations(df_list=dfs, on_param=on_param)
-            yield RunGroup(merged_df, on_param=on_param)
-
     @classmethod
     def _verbose_best(cls, dict_best: Dict[str, pd.DataFrame], indice: int):
 
@@ -343,9 +235,9 @@ class Wardrobe:
         print('\n' * 2)
 
         for k, v in dict_best.items():
-                print('Table : {} \n'.format(k))
-                print(tabulate(v, headers='keys', tablefmt="fancy_grid"))
-                print('\n')
+            print('Table : {} \n'.format(k))
+            print(tabulate(v, headers='keys', tablefmt="fancy_grid"))
+            print('\n')
 
     @classmethod
     def _query_to_dataframe(cls, query: peewee.ModelSelect) -> pd.DataFrame:
@@ -367,3 +259,140 @@ class Wardrobe:
                 list_row.clear()
         self.experiment = None
 
+    ########################################
+    ###### Methods for visualisation #######
+    ########################################
+
+    def _get_params(self, on_param: str) -> List[str]:
+        """ 
+        Fetch parameters list from Parameter Table, excepted on_param Parameter
+        Parameters:
+            on_param (str): Parameter to exclude from list.
+        """
+        query = Parameter.select(Parameter.parameter_name)
+        df = self._query_to_dataframe(query)
+        params = set(df.parameter_name)
+        params.remove(on_param)
+        params.remove('exp_name')
+        return list(params)
+
+    def _get_experiments_score(self, on_score: str) -> pd.DataFrame:
+        """
+        Fetch desired score for all experiments and parameters.
+        Parameters:
+            on_score (str): Score to select from Score table.
+        """
+        query = (Score.select(Score, Parameter, Experiment).join(
+            Parameter, on=(Parameter.experiment == Score.experiment)).join(
+                Experiment,
+                on=(Experiment.id_experiment == Parameter.experiment_id
+                    )).where(Score.type_score == on_score))
+        res = self.query(query)
+        df = pd.DataFrame(res)
+        df = df[[
+            'id_experiment', 'experiment_name', 'parameter_name', 'parameter',
+            'score'
+        ]]
+        return df
+
+    def _get_parameters_combinations(self, params:List[str]) -> Tuple:
+        """
+        Get all combination of parameters names and values.
+        Parameters:
+            params (List[str]): Parameters to combine.
+        """
+        # Query Parameters table to get all parameters values
+        params_ = {}
+        for p in params:
+            query = Parameter.select(
+                Parameter.parameter_name, Parameter.parameter).where(
+                    Parameter.parameter_name == p).group_by(
+                        Parameter.parameter)
+            res = self.query(query)
+            for val in res:
+                params_.setdefault(val["parameter_name"],
+                                   []).append(val['parameter'])
+
+        # Produce parameters cominations
+        allNames = sorted(params_)
+        combinations = it.product(*(params_[n] for n in allNames))
+        return combinations, allNames
+
+    def _merge_df_from_combinations(self, df_list: List[pd.DataFrame],
+                                    on_param: str) -> pd.DataFrame:
+        """ 
+        Given a dataframe list, merge all dataframes on the id_experiment column
+        Query db to get the on_param value for each run
+        Return a dataframe with all parameters and score values for each experiment.
+        Parameters:
+            df_list: List of dataframes to merge
+            on_param (str): Parameter to add in df
+        """
+        # Merge row by exp name
+        df_final = None
+        for df in df_list:
+            if df_final is None: df_final = df
+            else:
+                df_ = pd.merge(
+                    df_final,
+                    df,
+                    on='id_experiment',
+                    how='inner',
+                    suffixes=('', '_y'))
+
+                df_.drop([x for x in df_.columns if '_y' in x],
+                         axis="columns",
+                         inplace=True)
+
+                for i, row in df_.iterrows():
+                    query = (Experiment.select(
+                        Parameter.parameter_name, Parameter.parameter).join(
+                            Parameter,
+                            on=Experiment.id_experiment == Parameter.experiment
+                        ).where(Parameter.parameter_name == on_param).where(
+                            Experiment.id_experiment == row.id_experiment))
+
+                    res = self.query(query)
+                    new_param = next(iter(res))
+                    df_.at[i, new_param['parameter_name']] = new_param[
+                        'parameter']
+                    df_final = df_
+
+        return df_final
+
+    def plot_by_param(self, on_param: str, on_score: str):
+        """
+        Plot run that have all parameters identical excepted the on_param parameter.
+        The value that is plotted is the on_score param.
+        Parameters:
+            on_param (str): Parameter to test
+            on_score (str): Score to fetch as value for plot
+        """
+        # Get parameters names
+        params = self._get_params(on_param=on_param)
+
+        # Get all experiment with choosen score
+        all_exp_df = self._get_experiments_score(on_score=on_score)
+
+        # Get all parameters values
+        combinations, allNames = self._get_parameters_combinations(params)
+
+        # For every combination, filter experiment by parameters values and merge by exp
+        for comb in combinations:
+            dfs = []
+            # Construct parameters dict
+            pa = {allNames[i]: c for i, c in enumerate(comb)}
+
+            # Select exp with params
+            dfs = []
+            for k, v in pa.items():
+                df__ = all_exp_df[(all_exp_df['parameter_name'] == k)
+                                  & (all_exp_df['parameter'] == v)]
+                df__ = df__[['id_experiment', 'experiment_name', 'score']]
+                df__[k] = v
+                dfs.append(df__)
+
+            # Merge all parameters
+            merged_df = self._merge_df_from_combinations(
+                df_list=dfs, on_param=on_param)
+            yield RunGroup(merged_df, on_param=on_param)
